@@ -12,7 +12,11 @@ module ActivateGuru
         request.uri,
         request.params.merge({ api_key: config[:api_key] })
       )
-      body = response.body.is_a?(String) ? JSON.parse(response.body) : response.body
+      if request.error_codes.include?(response.body)
+        return OpenStruct.new(headers: response&.headers, status: response.status, ok: false, error: response.body)
+      end
+
+      body = suppress(JSON::ParserError) { JSON.parse(response.body) } || response.body
       OpenStruct.new(
         headers: response.headers,
         result: build_response_object(request, body),

@@ -20,3 +20,5 @@ gem "dry-struct"
 gem "zeitwerk"
 
 gem "byebug"
+
+gem "active_support"
